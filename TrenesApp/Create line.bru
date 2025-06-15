@@ -1,0 +1,20 @@
+meta {
+  name: Create line
+  type: http
+  seq: 3
+}
+
+post {
+  url: http:/localhost:3000/lines
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "number": "0",
+    "name": "Sarmiento",
+    "origin": "Once",
+    "end": "Moreno"
+  }
+}

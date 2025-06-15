@@ -1,0 +1,29 @@
+{
+  "name": "trenesapp",
+  "version": "1.0.0",
+  "description": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon api.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Silverbone6/TrenesApp.git"
+  },
+  "keywords": [
+    "trenes"
+  ],
+  "author": "Marcos Villena",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Silverbone6/TrenesApp/issues"
+  },
+  "homepage": "https://github.com/Silverbone6/TrenesApp#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
