@@ -1,19 +1,25 @@
 const express = require("express")
-const { getAllLines, getLine, createLine, deleteLine, updateLine } = require("./db/lines")
+const { 
+    getAllLines,
+    getLine, 
+    createLine, 
+    deleteLine, 
+    updateLine 
+} = require("./db/lines")
 const app = express()
 const port = 3000
 
 app.use(express.json())
 
 // GET. /lines
-app.get("/lines", (req, res) => {
-    const lines = getAllLines()
+app.get("/lines", async (req, res) => {
+    const lines = await getAllLines()
     res.json(lines)
 })
 
 // GET. /lines/<num>
-app.get("/lines/:num", (req, res) => {
-    const line = getLine(req.params.num)
+app.get("/lines/:num", async (req, res) => {
+    const line = await getLine(req.params.num)
 
     if (line === undefined) {
         res.sendStatus(404)
@@ -23,7 +29,7 @@ app.get("/lines/:num", (req, res) => {
 });
 
 // POST. /lines
-app.post("/lines", (req, res) => {
+app.post("/lines", async (req, res) => {
     const number = req.body.number
     const name = req.body.name
     const origin = req.body.origin
@@ -32,7 +38,7 @@ app.post("/lines", (req, res) => {
     if (number === undefined) {
         return res.status(400).send("Number not provided")
     }
-    if (getLine(number) !== undefined) {
+    if (await getLine(number) !== undefined) {
         return res.status(400).send("Line already exists")
     }
     if (name === undefined) {
@@ -45,37 +51,38 @@ app.post("/lines", (req, res) => {
         return res.status(400).send("End station not provided")
     }
 
-    const line = createLine(number, name, origin, end)
-    res.status(200).json(line)
+    const line = await createLine(number, name, origin, end)
+    res.status(201).json(line)
 })
 
 // DELETE. /lines/<num>
-app.delete("/lines/:num", (req, res) => {
-    const number = res.params.num
-    const line = getLine(number)
+app.delete("/lines/:num", async (req, res) => {
+    const number = req.params.num
+    const line = await getLine(number)
 
     if (line === undefined) {
         return res.status(404);
     }
 
-    deleteLine(number)
+    if (await deleteLine(number)) {
+        return res.json(line)
+    } else {
+        return res.sendstatus(500)
+    }
 
-    return res.json(line)
+    
 })
 
 // PUT. /lines/<num>
-app.put("/lines/:num", (req, res) => {
-    const number = res.params.num
-    const line = getLine(number)
-
+app.put("/lines/:num", async (req, res) => {
+    const line = await getLine(req.params.num)
     if (line === undefined) {
-        return res.status(404)
+        return res.status(404);
     }
-
     if (req.body === undefined) {
         return res.status(400).send("Body not defined")
     }
-
+    const number = req.params.num
     const name = req.body.name
     const origin = req.body.origin
     const end = req.body.end
@@ -90,8 +97,8 @@ app.put("/lines/:num", (req, res) => {
         return res.status(400).send("End station not provided")
     }
 
-    updateLine(number, name, origin, end)
-    res.json(getLine(number))
+    const updatedLine = await updateLine(number, name, origin, end)
+    res.status(201).json(line)
 })
 
 app.listen(port, () => {
